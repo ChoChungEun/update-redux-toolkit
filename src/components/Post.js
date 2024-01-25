@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deletePost, addPosts, getPosts } from "../redux/posts";
+import { updatePost, deletePost, addPosts, getPosts } from "../redux/posts";
 
 const Post = () => {
   const dispatch = useDispatch();
@@ -12,6 +12,17 @@ const Post = () => {
   }, [dispatch]);
 
   if (loading) return <p>Loading...</p>;
+
+  const handleClickUpdatePost = () => {
+    const postId = 1;
+    const newUpdatePost = {
+      id: 1,
+      title: "update",
+      body: "update",
+      userId: 99,
+    };
+    dispatch(updatePost({ postId, updatePost: newUpdatePost }));
+  };
 
   const handleClickAddPost = () => {
     const newPost = [
@@ -31,7 +42,8 @@ const Post = () => {
 
   return (
     <div>
-      <button onClick={handleClickAddPost}>GET POSTS</button>
+      <button onClick={handleClickUpdatePost}>UPDATE POSTS</button>
+      <button onClick={handleClickAddPost}>ADD POSTS</button>
       <button onClick={handleClickDeletePost}>DELETE POSTS</button>
       {posts?.map((post) => (
         <div

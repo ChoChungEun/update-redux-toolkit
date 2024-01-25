@@ -3,10 +3,22 @@ import axios from "axios";
 
 const BASE_URL = "https://jsonplaceholder.typicode.com/posts";
 
+export const updatePost = createAsyncThunk(
+  "UPDATE_POST",
+  async (arg, thunkAPI) => {
+    try {
+      const res = await axios.put(`${BASE_URL}/${arg.postId}`, arg.updatePost);
+      return thunkAPI.fulfillWithValue(arg);
+    } catch (err) {
+      console.log(err);
+      return thunkAPI.rejectWithValue(err);
+    }
+  }
+);
+
 export const deletePost = createAsyncThunk(
   "DELETE_POST",
   async (arg, thunkAPI) => {
-    console.log("arg", arg);
     try {
       await axios.delete(`${BASE_URL}/${arg}`);
       console.log(arg);
@@ -84,6 +96,25 @@ export const postsSlice = createSlice({
       state.posts = state.posts.filter((item) => item.id !== action.payload);
     });
     builder.addCase(deletePost.rejected, (state, action) => {
+      state.loading = false;
+    });
+
+    // updatePost
+    builder.addCase(updatePost.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(updatePost.fulfilled, (state, action) => {
+      state.loading = false;
+      state.posts = state.posts.map((post) => {
+        console.log(action.payload.updatePost);
+        if (post.id === action.payload.postId) {
+          return action.payload.updatePost;
+        } else {
+          return post;
+        }
+      });
+    });
+    builder.addCase(updatePost.rejected, (state, action) => {
       state.loading = false;
     });
   },
