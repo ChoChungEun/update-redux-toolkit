@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getPosts } from "../redux/posts";
+import { addPosts, getPosts } from "../redux/posts";
 
 const Post = () => {
   const dispatch = useDispatch();
@@ -13,13 +13,26 @@ const Post = () => {
 
   if (loading) return <p>Loading...</p>;
 
-  console.log("loading", loading);
-  console.log("posts", posts);
+  const handleClickAddPost = () => {
+    const newPost = [
+      {
+        userId: 4,
+        title: "new post",
+        body: "",
+      },
+    ];
+    dispatch(addPosts(newPost));
+  };
+
   return (
     <div>
+      <button onClick={handleClickAddPost}>GET POSTS</button>
       {posts?.map((post) => (
-        <div style={{ marginBottom: 10, borderBottom: "1px solid black" }}>
-          <div>id: {post.id}</div>
+        <div
+          key={post.id}
+          style={{ marginBottom: 10, borderBottom: "1px solid black" }}
+        >
+          <div>id: {post.userId}</div>
           <div>title: {post.title}</div>
         </div>
       ))}
