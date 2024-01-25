@@ -3,7 +3,22 @@ import axios from "axios";
 
 const BASE_URL = "https://jsonplaceholder.typicode.com/posts";
 
-export const addPosts = createAsyncThunk("ADD_POSTS", async (arg, thunkAPI) => {
+export const deletePost = createAsyncThunk(
+  "DELETE_POST",
+  async (arg, thunkAPI) => {
+    console.log("arg", arg);
+    try {
+      await axios.delete(`${BASE_URL}/${arg}`);
+      console.log(arg);
+      return thunkAPI.fulfillWithValue(arg);
+    } catch (err) {
+      console.log(err);
+      return thunkAPI.rejectWithValue(err);
+    }
+  }
+);
+
+export const addPosts = createAsyncThunk("ADD_POST", async (arg, thunkAPI) => {
   try {
     const res = await axios.post(BASE_URL, arg);
     const newPost = {
@@ -36,6 +51,7 @@ export const postsSlice = createSlice({
   },
   reducers: {},
   extraReducers: (builder) => {
+    // getPosts
     builder.addCase(getPosts.pending, (state, action) => {
       state.loading = true;
     });
@@ -46,6 +62,8 @@ export const postsSlice = createSlice({
     builder.addCase(getPosts.rejected, (state, action) => {
       state.loading = false;
     });
+
+    // addPosts
     builder.addCase(addPosts.pending, (state, action) => {
       state.loading = true;
     });
@@ -54,6 +72,18 @@ export const postsSlice = createSlice({
       state.posts = [action.payload, ...state.posts];
     });
     builder.addCase(addPosts.rejected, (state, action) => {
+      state.loading = false;
+    });
+
+    // deletePost
+    builder.addCase(deletePost.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(deletePost.fulfilled, (state, action) => {
+      state.loading = false;
+      state.posts = state.posts.filter((item) => item.id !== action.payload);
+    });
+    builder.addCase(deletePost.rejected, (state, action) => {
       state.loading = false;
     });
   },
