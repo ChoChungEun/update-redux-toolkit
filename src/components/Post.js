@@ -1,11 +1,14 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updatePost, deletePost, addPosts, getPosts } from "../redux/posts";
+import { changeColor } from "../redux/color";
 
 const Post = () => {
   const dispatch = useDispatch();
 
   const { posts, loading } = useSelector((state) => state.posts);
+
+  const { color } = useSelector((state) => state.color);
 
   useEffect(() => {
     dispatch(getPosts());
@@ -40,8 +43,17 @@ const Post = () => {
     dispatch(deletePost(postId));
   };
 
+  const handleChangeColor = () => {
+    dispatch(changeColor("red"));
+  };
+
+  console.log("color", color);
+
   return (
     <div>
+      <button onClick={handleChangeColor} style={{ color: color }}>
+        Change Color
+      </button>
       <button onClick={handleClickUpdatePost}>UPDATE POSTS</button>
       <button onClick={handleClickAddPost}>ADD POSTS</button>
       <button onClick={handleClickDeletePost}>DELETE POSTS</button>

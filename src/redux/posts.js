@@ -7,7 +7,7 @@ export const updatePost = createAsyncThunk(
   "UPDATE_POST",
   async (arg, thunkAPI) => {
     try {
-      const res = await axios.put(`${BASE_URL}/${arg.postId}`, arg.updatePost);
+      await axios.put(`${BASE_URL}/${arg.postId}`, arg.updatePost);
       return thunkAPI.fulfillWithValue(arg);
     } catch (err) {
       console.log(err);
@@ -21,7 +21,6 @@ export const deletePost = createAsyncThunk(
   async (arg, thunkAPI) => {
     try {
       await axios.delete(`${BASE_URL}/${arg}`);
-      console.log(arg);
       return thunkAPI.fulfillWithValue(arg);
     } catch (err) {
       console.log(err);
@@ -106,7 +105,6 @@ export const postsSlice = createSlice({
     builder.addCase(updatePost.fulfilled, (state, action) => {
       state.loading = false;
       state.posts = state.posts.map((post) => {
-        console.log(action.payload.updatePost);
         if (post.id === action.payload.postId) {
           return action.payload.updatePost;
         } else {
